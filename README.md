@@ -16,4 +16,4 @@ This project requires Python 3.11+ and Django 4.2.x. All dependencies are listed
 
 ## Run tests
 This command will perform all tests available in project
-python manage.py test
+`python manage.py test`
