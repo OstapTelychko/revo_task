@@ -2,3 +2,4 @@ revo.log
 revo/management/commands/__pycache__/download_revo_data.cpython-311.pyc
 revo/tests/__pycache__/test_download_revo_data_command.cpython-311.pyc
 revo_task/__pycache__/settings.cpython-311.pyc
+*pyc
