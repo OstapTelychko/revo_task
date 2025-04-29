@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&a9hbzd5c@hnz5^m$22k)*!9tdmtjpot)za9&0drfyn717k4*2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS:list[str] = []
 
 
 # Application definition
@@ -39,9 +39,9 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS:list[str] = []
 
-CUSTOM_APPS = []
+CUSTOM_APPS:list[str] = []
 
 PROJECT_APPS = [
     "revo"
@@ -65,8 +65,8 @@ DJANGO_MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-THIRD_PARTY_MIDDLEWARE = []
-CUSTOM_MIDDLEWARE = []
+THIRD_PARTY_MIDDLEWARE:list[str] = []
+CUSTOM_MIDDLEWARE:list[str] = []
 
 MIDDLEWARE = [
     *DJANGO_MIDDLEWARE,

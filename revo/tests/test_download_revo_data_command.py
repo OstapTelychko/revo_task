@@ -18,7 +18,7 @@ from revo.management.commands.download_revo_data import Command
 class TestDownloadRevoDataCommand(TestCase):
     """Test the download_revo_data command."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the test case."""
         self.command = Command()
         self.valid_data = [
@@ -27,30 +27,30 @@ class TestDownloadRevoDataCommand(TestCase):
         ]
     
     @patch('revo.management.commands.download_revo_data.requests.get')
-    def test_1_connection_error(self, mock_get:MagicMock):
+    def test_1_connection_error(self, mock_get:MagicMock) -> None:
         """Test connection error."""
 
         mock_get.side_effect = ConnectionError("Connection error")
-        with self.assertRaises(APIException, msg="APIException haven't been raised although Connection error occured") as context:
+        with self.assertRaises(APIException, msg="APIException hasn't been raised although connection error occurred") as context:
             call_command('download_revo_data')
         self.assertEqual(str(context.exception), "Connection error", "Connection error not raised")
     
 
     @patch('revo.management.commands.download_revo_data.requests.get')
-    def test_2_http_error_status(self, mock_get:MagicMock):
+    def test_2_http_error_status(self, mock_get:MagicMock) -> None:
         """Test HTTP error status."""
 
         mock_response = MagicMock()
         mock_response.raise_for_status.side_effect = HTTPError("HTTP error")
         mock_get.return_value = mock_response
 
-        with self.assertRaises(APIException, msg="APIException haven't been raised although HTTP error occured") as context:
+        with self.assertRaises(APIException, msg="APIException hasn't been raised although HTTP error occurred") as context:
             call_command('download_revo_data')
         self.assertEqual(str(context.exception), "HTTP error", "HTTP error not raised")
     
 
     @patch('revo.management.commands.download_revo_data.requests.get')
-    def test_3_invalid_data(self, mock_get:MagicMock):
+    def test_3_invalid_data(self, mock_get:MagicMock) -> None:
         """Test invalid data."""
 
         invalid_data = {"invalid": "data"}
@@ -66,7 +66,7 @@ class TestDownloadRevoDataCommand(TestCase):
     
 
     @patch('revo.management.commands.download_revo_data.requests.get')
-    def test_4_valid_data(self, mock_get:MagicMock):
+    def test_4_valid_data(self, mock_get:MagicMock) -> None:
         """Test valid data."""
 
         mock_response = MagicMock()

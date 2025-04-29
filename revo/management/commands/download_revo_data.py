@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TypeAlias, List, Dict
+from typing import TypeAlias, List, Dict, Sequence, Mapping
 import logging
 import json
 
@@ -9,7 +9,9 @@ from requests.exceptions import ConnectionError, RequestException, Timeout, HTTP
 
 from revo.exceptions import APIException
 
-    
+
+CommandArgs = Sequence[str]  # Positional arguments in Django commands are strings
+CommandKwargs = Mapping[str, str|bool|int|None]
 
 ID: TypeAlias = int
 NAME: TypeAlias = str
@@ -67,7 +69,7 @@ class Command(BaseCommand):
         return True
 
 
-    def handle(self, *args, **kwrgs)-> str:
+    def handle(self, *args:CommandArgs, **kwargs:CommandKwargs)-> str:
         "Handle the command."
 
         api_url = "https://api.revo.com/data"
