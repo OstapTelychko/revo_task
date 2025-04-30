@@ -25,58 +25,57 @@ class Command(BaseCommand):
     """Command to download Revo data."""
 
     help = "Download Revo data"
+    api_url = "https://api.revo.com/data"
 
 
-    def validate_data(self, data:REVO_DATA) -> bool:
+    @staticmethod
+    def validate_data(data:REVO_DATA) -> None:
         """Validate the data structure.
 
             Arguments
             ---------
                 data (List[Dict[str, ID|NAME|ACTIVE|TAGS]]): The data to validate.
-            Returns
-            -------
-                bool: True if the data is valid, False otherwise.
         """
+
+        errors:list[Exception] = []
 
         if not isinstance(data, List):
             raise ValueError(f"API response have to be list-like not {type(data)}")
-        
-        if not all(isinstance(item, Dict) for item in data):
-            raise ValueError(f"API response items have to be dict-like not {[type(item) for item in data]}")
-        
+                
         for item in data:
+            if not isinstance(item, Dict):
+                errors.append(ValueError(f"API response item must be a dict-like not {type(item)}"))
 
             required_fields = ["id", "name", "active", "tags"]
             missing_fields = [field for field in required_fields if field not in item]
             if missing_fields:
-                raise ValueError(f"Missing fields in API response item {', '.join(missing_fields)}")
+                errors.append(ValueError(f"Missing fields in API response item {', '.join(missing_fields)}"))
             
             if not isinstance(item["id"], ID):
-                raise ValueError(f"Field 'id' must be of type {ID} not {type(item['id'])}")
+                errors.append(ValueError(f"Field 'id' must be of type {ID} not {type(item['id'])}"))
             
             if not isinstance(item["name"], NAME):
-                raise ValueError(f"Field 'name' must be of type {NAME} not {type(item['name'])}")
+                errors.append(ValueError(f"Field 'name' must be of type {NAME} not {type(item['name'])}"))
             
             if not isinstance(item["active"], ACTIVE):
-                raise ValueError(f"Field 'active' must be of type {ACTIVE} not {type(item['active'])}")
+                errors.append(ValueError(f"Field 'active' must be of type {ACTIVE} not {type(item['active'])}"))
             
             if not isinstance(item["tags"], List):
-                raise ValueError(f"Field 'tags' must be list-like not {type(item['tags'])}")
+                errors.append(ValueError(f"Field 'tags' must be list-like not {type(item['tags'])}"))
             
-            if not all(isinstance(tag, str) for tag in item["tags"]):
-                raise ValueError(f"Field 'tags' must be a list of strings not {[type(tag) for tag in item['tags']]}")
-            
-        return True
+            if not all(isinstance(tag, str) for tag in item["tags"]): #type:ignore[union-attr] #I already check if item["tags"] is a list
+                errors.append(ValueError(f"Field 'tags' must be a list of strings not {[type(tag) for tag in item['tags']]}")) #type:ignore[union-attr] #I already check if item["tags"] is a list
+
+            if errors:
+                raise ExceptionGroup("API response validation errors", errors)
 
 
     def handle(self, *args:CommandArgs, **kwargs:CommandKwargs)-> str:
         "Handle the command."
 
-        api_url = "https://api.revo.com/data"
-
         try:
-            logger.info(f"Starting download of Revo data url {api_url}")
-            response = requests.get(api_url, timeout=10)
+            logger.info(f"Starting download of Revo data url {self.api_url}")
+            response = requests.get(self.api_url, timeout=10)
             response.raise_for_status() 
 
             data = response.json()
